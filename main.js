@@ -1,5 +1,5 @@
-const appUrl = 'http://61.175.100.14:5433/'
-// const appUrl = 'http://localhost:3000/'
+// const appUrl = 'http://61.175.100.14:5433/'
+const appUrl = 'http://localhost:3000/'
 const iconPath =  __dirname + '/assets/favicon.png'
 const blinkIconPath =  __dirname + '/assets/favicon_blink.png'
 
@@ -45,7 +45,7 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    if (mainWindow) {
+    if (mainWindow && !isMacOS()) {
       e.preventDefault();
     }
 
@@ -93,17 +93,21 @@ function createWindow() {
 }
 
 function showWindow() {
-  if (mainWindow) {
+  if (mainWindow && !isMacOS()) {
     mainWindow.show();
     mainWindow.setSkipTaskbar(false);
   }
 }
 
 function hideWindow() {
-  if (mainWindow) {
+  if (mainWindow && !isMacOS()) {
     mainWindow.hide();
     mainWindow.setSkipTaskbar(true);
   }
+}
+
+function isMacOS() {
+  return process.platform === 'darwin';
 }
 
 function createTray() {
@@ -155,13 +159,15 @@ app.on('ready', () => {
 })
 
 app.on('browser-window-blur', (event, window) => {
-  window.webContents.executeJavaScript('window.messenger.onAppHidden()');
+  //if(!isMacOS())
+    window.webContents.executeJavaScript('window.messenger.onAppHidden()');
 
  
 })
 
 app.on('browser-window-focus', (event, window) => {
-  window.webContents.executeJavaScript('window.messenger.onAppVisible()');
+  //if(!isMacOS())
+   window.webContents.executeJavaScript('window.messenger.onAppVisible()');
 
  
 })
@@ -199,7 +205,7 @@ app.on('activate-with-no-open-windows', createWindow);
 
 // ipc on
 ipcMain.on('new-messages-show', function(event, arg) {
-  if (process.platform == 'darwin'){
+  if (isMacOS()){
     app.dock.bounce();
     app.dock.setBadge('.');
   }
@@ -208,7 +214,7 @@ ipcMain.on('new-messages-show', function(event, arg) {
 
 ipcMain.on('tray-badge', function(event, arg) {
   blinkTray();
-  if (process.platform == 'darwin'){
+  if (isMacOS()){
     app.dock.bounce();
     app.dock.setBadge(arg.count.toString());
   }
@@ -217,15 +223,16 @@ ipcMain.on('tray-badge', function(event, arg) {
 
 ipcMain.on('new-messages-hide', function(event, arg) {
   stopBlinkTray();
-  if (process.platform == 'darwin'){
+  if (isMacOS()){
     app.dock.setBadge('');
   }
   
 });
 
 ipcMain.on('tray-bounce', function(event, arg) {
-  if (process.platform == 'darwin'){
+  if (isMacOS()){
     app.dock.bounce();
   }
   
 });
+
