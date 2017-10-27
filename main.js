@@ -13,16 +13,19 @@ const url = require('url');
 
 const constant = require('./constant')
 
-const appUrl = constant.AppDevUrl;;
+const appUrl = constant.AppUrl;;
 const isMacOS = constant.isMacOS;
 
 const notificationManager = require('./notification');
-const updateManager = require('./update');
+const updater = require('electron-simple-updater');
+updater.init({
+  checkUpdateOnStart: false,
+  autoDownload: false
+});
 
 let tray = null;
 
 var player = require('play-sound')(opts = {});
-
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -175,19 +178,23 @@ app.on('ready', () => {
   createWindow();
   createTray();
   notificationManager.init(electron.screen.getPrimaryDisplay().workAreaSize.width,electron.screen.getPrimaryDisplay().workAreaSize.height);
-  updateManager.init();
 })
 
 app.on('browser-window-blur', (event, window) => {
   //if(!isMacOS)
-  window.webContents.executeJavaScript('window.messenger.onAppHidden()');
+  if (window == BrowserWindow) {
+    window.webContents.executeJavaScript('window.messenger.onAppHidden()');
+  }
+  
 
 
 })
 
 app.on('browser-window-focus', (event, window) => {
   //if(!isMacOS)
-  window.webContents.executeJavaScript('window.messenger.onAppVisible()');
+  if (window == BrowserWindow) {
+    window.webContents.executeJavaScript('window.messenger.onAppVisible()');
+  }
 
 
 })

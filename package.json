@@ -18,5 +18,8 @@
   },
   "devDependencies": {
     "electron": "~1.7.8"
+  },
+  "updater": {
+    "url": "https://raw.githubusercontent.com/EaglesoftZJ/iGemDesktop/master/update.json"
   }
 }

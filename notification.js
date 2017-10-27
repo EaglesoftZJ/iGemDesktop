@@ -1,10 +1,12 @@
-const {BrowserWindow } = require('electron');
+const { BrowserWindow } = require('electron');
 const isMacOS = require('./constant').isMacOS;
+const url = require('url');
+const path = require('path');
 
 const notificationManager = {
     notificationWindow: null,
     notificationMap: {},
-    showTime: 5,
+    showTime: 100,
     init(screenWidth, screenHeight) {
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
@@ -19,27 +21,41 @@ const notificationManager = {
             this.offSetY += 50;
         }
 
-        this.notificationWindow = new BrowserWindow({ 
-            width: this.width, 
-            height:this.height, 
-            resizable: false, 
+        this.notificationWindow = new BrowserWindow({
+            width: this.width,
+            height: this.height,
+            resizable: true,
             frame: false,
             alwaysOnTop: true,
-            skipTaskbar: true, 
-            x: this.screenWidth - this.offsetX, 
-            y: this.screenHeight - this.offSetY  
+            skipTaskbar: true,
+            x: this.screenWidth - this.offsetX,
+            y: this.screenHeight - this.offSetY
         });
+
+        this.notificationWindow.loadURL(url.format({
+            pathname: path.join(__dirname, 'update.html'),
+            protocol: 'file:',
+            slashes: true
+        }))
+
+
+        // this.notificationWindow.loadURL(url)
 
         setInterval(() => {
             this.showTime = this.showTime - 1 <= 0 ? 0 : this.showTime - 1;
             if (this.notificationWindow)
                 if (this.showTime > 0) {
-                
-                    this.notificationWindow.show();
+                    if (!this.notificationWindow.isVisible) {
+                        this.notificationWindow.show();
+                    }
+
                 } else {
-                    this.notificationWindow.hide();
+                    if (this.notificationWindow.isVisible) {
+                        this.notificationWindow.hide();
+                    }
+                    
                 }
-          }, 1000);
+        }, 1000);
 
     },
     addShowTime(time) {
