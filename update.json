@@ -13,7 +13,7 @@
     },
     "darwin-x64-prod": {
       "readme": "Second Release",
-      "update": "https://github.com/megahertz/electron-simple-updater/releases/download/darwin-x64-prod-v1.0.2/release.json",
+      "update": "https://raw.githubusercontent.com/EaglesoftZJ/iGemDesktop/master/release.json",
       "install": "https://github.com/megahertz/electron-simple-updater/releases/download/darwin-x64-prod-v1.0.2/Simple.Updater.Example-0.0.2.dmg",
       "version": "1.0.2"
     }
