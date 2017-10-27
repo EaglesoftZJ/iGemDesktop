@@ -1,29 +1,49 @@
-// const appUrl = 'http://61.175.100.14:5433/'
-const appUrl = 'http://localhost:3000/'
-const iconPath =  __dirname + '/assets/favicon.png'
-const blinkIconPath =  __dirname + '/assets/favicon_blink.png'
+// const appUrl = 'http://61.175.100.14:5433/' 
+
+const iconPath = __dirname + '/assets/favicon.png';
+const blinkIconPath = __dirname + '/assets/favicon_blink.png';
 
 let blinkTrayFlag = false;
 
-const { app, Menu, Tray, ipcMain } = require('electron')
+const electron = require('electron');
+const { app, Menu, Tray, ipcMain, BrowserWindow } = require('electron');
 
-// Module to create native browser window.
-const { BrowserWindow } = require('electron')
+const path = require('path');
+const url = require('url');
 
-const path = require('path')
-const url = require('url')
+const constant = require('./constant')
+
+const appUrl = constant.AppDevUrl;;
+const isMacOS = constant.isMacOS;
+
+const notificationManager = require('./notification');
+const updateManager = require('./update');
 
 let tray = null;
 
-var player = require('play-sound')(opts = {})
+var player = require('play-sound')(opts = {});
+
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let mainWindow
+let mainWindow;
 
 function createWindow() {
+
+
+
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 1000, height: 700 })
+
+  let offsetX = 200;
+  let offsetY;
+
+  if (isMacOS) {
+    offsetY = -9999; //超过屏幕自动居于底部 不用管
+  } else {
+    offsetY = 150;
+  }
+
 
   Menu.setApplicationMenu(null);
 
@@ -45,12 +65,12 @@ function createWindow() {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time
     // when you should delete the corresponding element.
-    if (mainWindow && !isMacOS()) {
+    if (mainWindow && !isMacOS) {
       e.preventDefault();
     }
 
     hideWindow();
-    
+
   })
 
 
@@ -93,32 +113,30 @@ function createWindow() {
 }
 
 function showWindow() {
-  if (mainWindow && !isMacOS()) {
+  if (mainWindow && !isMacOS) {
     mainWindow.show();
     mainWindow.setSkipTaskbar(false);
   }
 }
 
 function hideWindow() {
-  if (mainWindow && !isMacOS()) {
+  if (mainWindow && !isMacOS) {
     mainWindow.hide();
     mainWindow.setSkipTaskbar(true);
   }
 }
 
-function isMacOS() {
-  return process.platform === 'darwin';
-}
+
 
 function createTray() {
   tray = new Tray(iconPath);
   const contextMenu = Menu.buildFromTemplate([
-    { 
-      label: '退出' ,
-      click () { 
-        mainWindow = null; 
+    {
+      label: '退出',
+      click() {
+        mainWindow = null;
         app.quit();
-       }
+      }
     }
   ])
   tray.setToolTip('iGem');
@@ -135,9 +153,9 @@ function createTray() {
       tray.setImage(iconPath);
     } else {
       if (blinkTrayFlag) {
-        tray.setImage( blinkIconPath);
+        tray.setImage(blinkIconPath);
       }
-      
+
     }
   }, 500);
 }
@@ -156,20 +174,22 @@ function stopBlinkTray() {
 app.on('ready', () => {
   createWindow();
   createTray();
+  notificationManager.init(electron.screen.getPrimaryDisplay().workAreaSize.width,electron.screen.getPrimaryDisplay().workAreaSize.height);
+  updateManager.init();
 })
 
 app.on('browser-window-blur', (event, window) => {
-  //if(!isMacOS())
-    window.webContents.executeJavaScript('window.messenger.onAppHidden()');
+  //if(!isMacOS)
+  window.webContents.executeJavaScript('window.messenger.onAppHidden()');
 
- 
+
 })
 
 app.on('browser-window-focus', (event, window) => {
-  //if(!isMacOS())
-   window.webContents.executeJavaScript('window.messenger.onAppVisible()');
+  //if(!isMacOS)
+  window.webContents.executeJavaScript('window.messenger.onAppVisible()');
 
- 
+
 })
 
 // Quit when all windows are closed.
@@ -205,34 +225,51 @@ app.on('activate-with-no-open-windows', createWindow);
 
 // ipc on
 ipcMain.on('new-messages-show', function(event, arg) {
-  if (isMacOS()){
+  if (isMacOS) {
     app.dock.bounce();
     app.dock.setBadge('.');
   }
-    
-}); 
+
+});
 
 ipcMain.on('tray-badge', function(event, arg) {
   blinkTray();
-  if (isMacOS()){
+  if (isMacOS) {
     app.dock.bounce();
-    app.dock.setBadge(arg.count.toString());
+    //app.dock.setBadge(arg.count.toString());
   }
-  
+
 });
 
 ipcMain.on('new-messages-hide', function(event, arg) {
   stopBlinkTray();
-  if (isMacOS()){
+  if (isMacOS) {
     app.dock.setBadge('');
   }
-  
+
 });
 
 ipcMain.on('tray-bounce', function(event, arg) {
-  if (isMacOS()){
+  if (isMacOS) {
     app.dock.bounce();
   }
-  
+
 });
+
+ipcMain.on('new-messages-notification', function(event, arg) {
+  if (!mainWindow.isFocused()) {
+    notificationManager.addShowTime(5);
+
+  }
+  if (isMacOS) {
+    
+  }
+
+});
+
+function showNotification() {
+  notificationWindow.setBounds({ width: 200, height: 300, x: screenWidth - 200, y: screenHeight - 300 });
+}
+
+
 

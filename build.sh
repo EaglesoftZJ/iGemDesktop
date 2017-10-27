@@ -3,22 +3,22 @@ mkdir build/out
 
 echo "Building All Platforms"
 
-electron-packager . iGem --platform=darwin --arch=all --app-bundle-id=cn.eaglesoft.igem --version=1.7.8 --out=build --icon=assets/app_icon
+electron-packager . 飞鸟 --platform=darwin --overwrite  --arch=all --app-bundle-id=cn.eaglesoft.飞鸟 --version=1.7.8 --out=build --icon=assets/app_icon --osx-sign
 
-cd build/iGem-darwin-x64/
+cd build/飞鸟-darwin-x64/
 
-zip --symlinks -r iGem-Mac.zip iGem.app/
-mv iGem-Mac.zip ../out/
+zip --symlinks -r 飞鸟-Mac.zip 飞鸟.app/
+mv 飞鸟-Mac.zip ../out/
 cd ../../
 
 # echo "Building Windows"
 
-electron-packager . iGem --platform=win32 --arch=all --app-bundle-id=cn.eaglesoft.igem --version=1.7.8 --out=build --icon=assets/app_icon.icns
+electron-packager . 飞鸟 --platform=win32 --overwrite  --arch=all --app-bundle-id=cn.eaglesoft.飞鸟 --version=1.7.8 --out=build --icon=assets/app_icon.icns
 
 cd build
-zip --symlinks -r iGem-Win-x86.zip iGem-win32-ia32/
-mv iGem-Win-x86.zip out/
+zip --symlinks -r 飞鸟-Win-x86.zip 飞鸟-win32-ia32/
+mv 飞鸟-Win-x86.zip out/
 
-zip --symlinks -r iGem-Win-x64.zip iGem-win32-x64/
-mv iGem-Win-x64.zip out/
+zip --symlinks -r 飞鸟-Win-x64.zip 飞鸟-win32-x64/
+mv 飞鸟-Win-x64.zip out/
 cd ../

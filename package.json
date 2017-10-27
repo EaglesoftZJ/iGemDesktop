@@ -1,17 +1,19 @@
 {
-  "name": "iGem",
+  "name": "FlyChat",
   "version": "1.0.0",
   "description": "IM of eaglesoft.cn",
   "main": "main.js",
-  "repository": "https://github.com/electron/electron-quick-start",
+  "productName": "FlyChat",
+  "repository": "https://github.com/EaglesoftZJ/iGemDesktop",
   "keywords": [
-    "iGem",
+    "飞鸟",
     "im",
     "eaglesoft"
   ],
-  "author": "eaglesoft",
+  "author": "eaglesoft.cn LTD",
   "license": "CC0-1.0",
   "dependencies": {
+    "electron-simple-updater": "^1.2.2",
     "play-sound": "~1.1.1"
   },
   "devDependencies": {
