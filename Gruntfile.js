@@ -5,12 +5,26 @@ grunt.config.init({
   pkg: grunt.file.readJSON('gruntPackage.json'),
   'create-windows-installer': {
     x64: {
-      appDirectory: './build/飞鸟-win32-x64',
-      outputDirectory: './build/win-setup',
-      name: '飞鸟',
-      description: '易舸软件',
-      authors: '易舸软件',
-      exe: '飞鸟.exe'
+      appDirectory: './build/FlyChat-win32-x64',
+      outputDirectory: './build/win-setup64',
+      name: 'FlyChat',
+      description: 'eaglesoft',
+      authors: 'eaglesoft',
+      exe: 'FlyChat.exe',
+      version: '1.0.0',
+      iconUrl: './assets/app_icon.ico',
+      setupIcon: './assets/app_icon.ico'
+    },
+    ia32: {
+      appDirectory: './build/FlyChat-win32-ia32',
+      outputDirectory: './build/win-setup32',
+      name: 'FlyChat32',
+      description: 'eaglesoft',
+      authors: 'eaglesoft',
+      exe: 'FlyChat.exe',
+      version: '1.0.0',
+      iconUrl: './assets/app_icon.ico',
+      setupIcon: './assets/app_icon.ico'
     }
   }
 });
